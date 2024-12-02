@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Người Dùng</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="./favicon_io/android-chrome-512x512.png"
+      type="image/x-icon"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      header {
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      nav ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 20px;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: 500;
+        transition: background-color 0.3s ease, transform 0.2s;
+      }
+
+      nav ul li a:hover {
+        background-color: #ffde59;
+        color: #333;
+        transform: scale(1.05);
+      }
+
+      .user-management {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 50px;
+        margin-top: 30px;
+      }
+
+      .user-management h2 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #007bff;
+      }
+
+      .user-table {
+        width: 80%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        margin-bottom: 30px;
+      }
+
+      .user-table th,
+      .user-table td {
+        padding: 15px;
+        text-align: center;
+        font-size: 1.1em;
+      }
+
+      .user-table th {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .user-table tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .user-table tr:hover {
+        background-color: #e0e0e0;
+      }
+
+      .user-table td button {
+        background-color: #ffde59;
+        color: #333;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .user-table td button:hover {
+        background-color: #ffbc00;
+      }
+
+      .add-user-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 20px;
+      }
+
+      .add-user-btn:hover {
+        background-color: #0056b3;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 500px;
+      }
+
+      .modal-content input,
+      .modal-content select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 1em;
+      }
+
+      .modal-content button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 1.1em;
+      }
+
+      .modal-content button:hover {
+        background-color: #0056b3;
+      }
+
+      footer {
+        text-align: center;
+        padding: 25px;
+        background-color: #007bff;
+        color: rgb(255, 255, 255);
+        font-size: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>Quản Lý Người Dùng</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#">Trang Chủ</a></li>
+          <li><a href="#">Quản Lý Gia Sư</a></li>
+          <li><a href="#">Quản Lý Khóa Học</a></li>
+          <li><a href="#">Quản Lý Tài Chính</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section class="user-management">
+      <h2>Danh Sách Người Dùng</h2>
+      <button class="add-user-btn" onclick="openModal()">
+        Thêm Người Dùng
+      </button>
+
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Tên</th>
+            <th>Email</th>
+            <th>Vai Trò</th>
+            <th>Hành Động</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Các người dùng sẽ được thêm vào đây -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Modal Thêm Người Dùng -->
+    <div id="addUserModal" class="modal">
+      <div class="modal-content">
+        <h3>Thêm Người Dùng Mới</h3>
+        <input type="text" placeholder="Tên người dùng" id="userName" />
+        <input type="email" placeholder="Email" id="userEmail" />
+        <select id="userRole">
+          <option value="admin">Admin</option>
+          <option value="user">User</option>
+          <option value="manager">Manager</option>
+        </select>
+        <button onclick="addUser()">Thêm</button>
+        <button onclick="closeModal()">Đóng</button>
+      </div>
+    </div>
+
+    <footer>
+      © 2024 Quản Lý Dịch Vụ Gia Sư. Tất cả các quyền được bảo lưu.
+    </footer>
+
+    <script>
+      // Dữ liệu mẫu người dùng
+      let users = [
+        { name: "Nguyễn Văn A", email: "nguyenvana@gmail.com", role: "Admin" },
+        { name: "Trần Thị B", email: "tranthib@gmail.com", role: "User" },
+      ];
+
+      // Hàm hiển thị danh sách người dùng
+      function displayUsers() {
+        const tableBody = document.getElementById("userTableBody");
+        tableBody.innerHTML = ""; // Xóa danh sách cũ
+
+        users.forEach((user, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>
+              <button onclick="editUser(${index})">Sửa</button>
+              <button onclick="deleteUser(${index})">Xóa</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      // Hàm mở modal thêm người dùng
+      function openModal() {
+        document.getElementById("addUserModal").style.display = "flex";
+      }
+
+      // Hàm đóng modal
+      function closeModal() {
+        document.getElementById("addUserModal").style.display = "none";
+      }
+
+      // Hàm thêm người dùng
+      function addUser() {
+        const name = document.getElementById("userName").value;
+        const email = document.getElementById("userEmail").value;
+        const role = document.getElementById("userRole").value;
+
+        if (name && email) {
+          users.push({ name, email, role });
+          displayUsers(); // Cập nhật lại danh sách người dùng
+          closeModal(); // Đóng modal
+        } else {
+          alert("Vui lòng nhập đủ thông tin!");
+        }
+      }
+
+      // Hàm chỉnh sửa người dùng
+      function editUser(index) {
+        const user = users[index];
+        const newName = prompt("Sửa tên người dùng:", user.name);
+        if (newName) {
+          user.name = newName;
+          displayUsers();
+        }
+      }
+
+      // Hàm xóa người dùng
+      function deleteUser(index) {
+        if (confirm("Bạn có chắc chắn muốn xóa người dùng này?")) {
+          users.splice(index, 1);
+          displayUsers();
+        }
+      }
+
+      // Hiển thị danh sách người dùng ban đầu
+      displayUsers();
+    </script>
+  </body>
+</html>
